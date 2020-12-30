@@ -1,0 +1,49 @@
+#######################################
+# Syntax Coloring Map OV7670
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+OV7670		KEYWORD1
+TCamConfig	KEYWORD1
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin					KEYWORD2
+SetResolution			KEYWORD2
+WriteRegister			KEYWORD2
+ReadRegister			KEYWORD2
+WriteRegList			KEYWORD2
+ReadAll					KEYWORD2
+ShowAll					KEYWORD2
+SetCamClock				KEYWORD2
+ShowCSIRegisters		KEYWORD2
+SetCSIClock				KEYWORD2
+ShowCamConfig			KEYWORD2
+ClearFrameReady 		KEYWORD2
+FrameReady				KEYWORD2
+GetHeaderPtr			KEYWORD2
+ImageSize				KEYWORD2
+SetContrast				KEYWORD2
+SetBrightness			KEYWORD2
+SetLEDComp				KEYWORD2
+GetCSIClock				KEYWORD2
+GetImageType			KEYWORD2
+CheckMotion				KEYWORD2
+SetResolution			KEYWORD2
+OutMode					KEYWORD2
+SetOutMode				KEYWORD2
+SetYUVOrder				KEYWORD2
+CaptureRunning			KEYWORD2
+# Constants (LITERAL1)
+#######################################
+VGA		LITERAL1
+QVGA	LITERAL1
+QQVGA	LITERAL1
+CSI12	LITERAL1
+CSI24	LITERAL1
+RGB565	LITERAL1
+YUV422	LITERAL1
