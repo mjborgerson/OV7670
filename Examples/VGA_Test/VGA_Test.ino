@@ -30,6 +30,61 @@ tBMPHDR565 fileheader;
 File bmpfile;
 const int pinCamReset = 14;
 
+void CMSI(void) {
+  Serial.printf("\n\nOV7670 Camera  VGA Test 3 %s\n", compileTime);
+  OV7670.ShowCamConfig();
+}
+
+void CMCS(void) {  // Show CSI registers
+  OV7670.ShowCSIRegisters();
+}
+
+// Show Camera Registers
+void CMCR(void) {
+  uint8_t regs[200];
+  OV7670.ReadAll(regs);
+  OV7670.ShowAll(regs);
+}
+
+void CMGF(void) {
+  uint32_t imagesize, hdrsize;
+
+  imagesize = OV7670.ImageSize();
+
+  hdrsize = sizeof(tBMPHDR565);
+  Serial.printf("BMP Hdr is %lu bytes at %p \n", hdrsize, OV7670.GetHeaderPtr());
+  Serial.printf("Ready to save %lu bytes.\n", imagesize);
+  Serial.println("Saving OV7670.bmp ");
+
+  if (SD.exists("OV7670.bmp")) {
+    // delete the file:
+    Serial.println("Removing old  OV7670.bmp...");
+    SD.remove("OV7670.bmp");
+  }
+  Serial.println("Opening File\n");
+  bmpfile = SD.open("OV7670.bmp", FILE_WRITE);
+  Serial.printf("bmpfile: %p\n", bmpfile);
+  if (bmpfile) {
+    Serial.println("Writing...");
+  } else {
+    Serial.println("Could not open file.");
+    return;
+  }
+
+  delay(10);
+  bmpfile.write((const uint8_t *)OV7670.GetHeaderPtr(), 66);
+  bmpfile.write(cbuff2, imagesize);
+
+  Serial.printf("bmpfile: %p\n", bmpfile);
+  delay(5);
+  Serial.println("Write complete");
+  Serial.printf("bmpfile: %p\n", bmpfile);
+  delay(5);
+  bmpfile.close();
+  Serial.printf("bmpfile: %p  closed \n", bmpfile);
+  Serial.println("File saved to SD card.");
+}
+
 void setup() {
   Serial.begin(9600);
   delay(200);
@@ -76,61 +131,4 @@ void loop() {
     if (ch == 'f') CMGF();
   }
 
-}
-
-void CMSI(void) {
-  Serial.printf("\n\nOV7670 Camera  VGA Test 3 %s\n", compileTime);
-  OV7670.ShowCamConfig();
-}
-
-
-void CMCS(void) {  // Show CSI registers
-  OV7670.ShowCSIRegisters();
-}
-
-
-// Show Camera Registers
-void CMCR(void) {
-  uint8_t regs[200];
-  OV7670.ReadAll(regs);
-  OV7670.ShowAll(regs);
-}
-
-void CMGF(void) {
-  uint32_t imagesize, hdrsize, fbc;
-
-  imagesize = OV7670.ImageSize();
-
-  hdrsize = sizeof(tBMPHDR565);
-  Serial.printf("BMP Hdr is %lu bytes at %p \n", hdrsize, OV7670.GetHeaderPtr());
-  Serial.printf("Ready to save %lu bytes.\n", imagesize);
-  Serial.println("Saving OV7670.bmp ");
-
-  if (sd.exists("OV7670.bmp")) {
-    // delete the file:
-    Serial.println("Removing old  OV7670.bmp...");
-    sd.remove("OV7670.bmp");
-  }
-  Serial.println("Opening File\n");
-  bmpfile = sd.open("OV7670.bmp", FILE_WRITE);
-  Serial.printf("bmpfile: %p\n", bmpfile);
-  if (bmpfile) {
-    Serial.println("Writing...");
-  } else {
-    Serial.println("Could not open file.");
-    return;
-  }
-
-  delay(10);
-  bmpfile.write((const uint8_t *)OV7670.GetHeaderPtr(), 66);
-  bmpfile.write(cbuff2, imagesize);
-
-  Serial.printf("bmpfile: %p\n", bmpfile);
-  delay(5);
-  Serial.println("Write complete");
-    Serial.printf("bmpfile: %p\n", bmpfile);
-  delay(5);
-  bmpfile.close();
-  Serial.printf("bmpfile: %p  closed \n", bmpfile);
-  Serial.println("File saved to SD card.");
 }

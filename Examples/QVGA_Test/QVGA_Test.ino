@@ -30,58 +30,11 @@ tBMPHDR565 fileheader;
 File bmpfile;
 const int pinCamReset = 14;
 
-void setup() {
-  Serial.begin(9600);
-  delay(200);
-  Wire.begin();
-
-  pinMode(pinCamReset, OUTPUT);
-  pinMode(ledpin, OUTPUT);
-
-  digitalWriteFast(pinCamReset, LOW);
-  delay(10);
-  digitalWriteFast(pinCamReset, HIGH);  // subsequent resets via SCB
-
-  Serial.print("\n\nInitializing SD card...");
-
-  if (!SD.begin(BUILTIN_SDCARD)) {
-    Serial.println("initialization failed!");
-    BlinkForever();
-  }
-  Serial.println("initialization done.");
-
-  if (OV7670.begin(QVGA, cbuff1, cbuff2)) {
-    Serial.println("OV7670 camera initialized.");
-    Serial.printf("cbuff1 at   %p\n", cbuff1);
-    Serial.printf("cbuff2 at    %p\n", cbuff2);
-    Serial.printf("fcaptbuff at %p\n", fcaptbuff);
-  } else {
-    Serial.println("Error initializing OV7670");
-    BlinkForever();
-  }
-  CMSI();
-
-  LEDOFF
-}
-
 void BlinkForever(void) {
   while (1) {
     LEDON; delay(100);
     LEDOFF; delay(100);
   }
-}
-
-void loop() {
-
-  char ch;
-  if (Serial.available()) {
-    ch = Serial.read();
-    if (ch == 's') CMSI();
-    if (ch == 'c') CMCS();
-    if (ch == 'r') CMCR();
-    if (ch == 'f') CMGF();
-  }
-
 }
 
 void CMSI(void) {
@@ -142,4 +95,51 @@ void CMGF(void) {
   bmpfile.close();
   Serial.printf("bmpfile closed \n");
   Serial.println("File saved to SD card.");
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(200);
+  Wire.begin();
+
+  pinMode(pinCamReset, OUTPUT);
+  pinMode(ledpin, OUTPUT);
+
+  digitalWriteFast(pinCamReset, LOW);
+  delay(10);
+  digitalWriteFast(pinCamReset, HIGH);  // subsequent resets via SCB
+
+  Serial.print("\n\nInitializing SD card...");
+
+  if (!SD.begin(BUILTIN_SDCARD)) {
+    Serial.println("initialization failed!");
+    BlinkForever();
+  }
+  Serial.println("initialization done.");
+
+  if (OV7670.begin(QVGA, cbuff1, cbuff2)) {
+    Serial.println("OV7670 camera initialized.");
+    Serial.printf("cbuff1 at   %p\n", cbuff1);
+    Serial.printf("cbuff2 at    %p\n", cbuff2);
+    Serial.printf("fcaptbuff at %p\n", fcaptbuff);
+  } else {
+    Serial.println("Error initializing OV7670");
+    BlinkForever();
+  }
+  CMSI();
+
+  LEDOFF
+}
+
+void loop() {
+
+  char ch;
+  if (Serial.available()) {
+    ch = Serial.read();
+    if (ch == 's') CMSI();
+    if (ch == 'c') CMCS();
+    if (ch == 'r') CMCR();
+    if (ch == 'f') CMGF();
+  }
+
 }
